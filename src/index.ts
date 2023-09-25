@@ -4,7 +4,7 @@ import { cors } from "@elysiajs/cors";
 
 const app = new Elysia().use(swagger()).use(
   cors({
-    origin: "127.0.0.1",
+    origin: "127.0.0.1:5173",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     maxAge: 3600,
   })
