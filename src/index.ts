@@ -12,6 +12,14 @@ const app = new Elysia()
     )
       set.headers["Access-Control-Allow-Origin"] = request.url;
   })
+  .options("/*", ({ set, request }) => {
+    console.log(request.url);
+    if (
+      request.url == "http://localhost:5173" ||
+      request.url == "https://intelliseat.pkhing.dev"
+    )
+      set.headers["Access-Control-Allow-Origin"] = request.url;
+  })
   .use(cors());
 
 enum Side {
