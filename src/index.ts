@@ -2,25 +2,14 @@ import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { cors } from "@elysiajs/cors";
 
-const app = new Elysia()
-  .use(swagger())
-  .options("/", ({ set, request }) => {
-    console.log(request.url);
-    if (
-      request.url == "http://localhost:5173" ||
-      request.url == "https://intelliseat.pkhing.dev"
-    )
-      set.headers["Access-Control-Allow-Origin"] = request.url;
-  })
-  .options("/*", ({ set, request }) => {
-    console.log(request.url);
-    if (
-      request.url == "http://localhost:5173" ||
-      request.url == "https://intelliseat.pkhing.dev"
-    )
-      set.headers["Access-Control-Allow-Origin"] = request.url;
-  })
-  .use(cors());
+const app = new Elysia().use(swagger()).onRequest(({ set, request }) => {
+  console.log(request.url);
+  set.headers["Access-Control-Allow-Origin"] = request.url;
+  set.headers["Access-Control-Allow-Methods"] = "*";
+  set.headers["Access-Control-Allow-Headers"] = "*";
+  set.headers["Access-Control-Exposed-Headers"] = "*";
+  set.headers["Access-Control-Allow-Credentials"] = "true";
+});
 
 enum Side {
   left = "left",
