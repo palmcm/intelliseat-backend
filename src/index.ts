@@ -2,20 +2,12 @@ import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { cors } from "@elysiajs/cors";
 
-const app = new Elysia()
-  .use(swagger())
-  // .use(
-  //   cors({
-  //     origin: "http://127.0.0.1:5173",
-  //     credentials: true,
-  //   })
-  // )
-  .use(
-    cors({
-      origin: "https://intelliseat.pkhing.dev",
-      credentials: true,
-    })
-  );
+const app = new Elysia().use(swagger()).use(
+  cors({
+    origin: "https://intelliseat.pkhing.dev, http://127.0.0.1:5173",
+    credentials: true,
+  })
+);
 
 enum Side {
   left = "left",
