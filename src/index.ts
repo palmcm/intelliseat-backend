@@ -4,7 +4,7 @@ import { cors } from "@elysiajs/cors";
 
 const app = new Elysia({}).use(swagger()).use(
   cors({
-    origin: "http://127.0.0.1:5173",
+    origin: ["http://127.0.0.1:5173", "https://intelliseat.pkhing.dev"],
     credentials: true,
     maxAge: 3600,
   })
