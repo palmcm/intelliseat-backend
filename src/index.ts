@@ -2,17 +2,15 @@ import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { cors } from "@elysiajs/cors";
 
-const app = new Elysia()
-  .use(swagger())
-  .onRequest(({ set, request, headers }) => {
-    const host = request.headers.get("Host");
-    console.log("Host: ", host);
-    set.headers["Access-Control-Allow-Origin"] = host ? host : "*";
-    set.headers["Access-Control-Allow-Methods"] = "*";
-    set.headers["Access-Control-Allow-Headers"] = "*";
-    set.headers["Access-Control-Exposed-Headers"] = "*";
-    set.headers["Access-Control-Allow-Credentials"] = "true";
-  });
+const app = new Elysia().use(swagger()).onRequest(({ set, request }) => {
+  const origin = request.headers.get("Origin");
+  console.log("Origin: ", origin);
+  set.headers["Access-Control-Allow-Origin"] = origin ? origin : "*";
+  set.headers["Access-Control-Allow-Methods"] = "*";
+  set.headers["Access-Control-Allow-Headers"] = "*";
+  set.headers["Access-Control-Exposed-Headers"] = "*";
+  set.headers["Access-Control-Allow-Credentials"] = "true";
+});
 
 enum Side {
   left = "left",
