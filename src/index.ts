@@ -2,10 +2,9 @@ import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { cors } from "@elysiajs/cors";
 
-const app = new Elysia().use(swagger()).use(
+const app = new Elysia({}).use(swagger()).use(
   cors({
     origin: "http://127.0.0.1:5173",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
     maxAge: 3600,
   })
@@ -22,6 +21,7 @@ app.group("/sitdata", (app) => {
   app.get(
     "/days",
     () => {
+      const node = "node-1";
       const now = Date.now();
       const sitHours = [2, 5, 7, 8, 4, 3, 6, 2, 3, 4, 5];
       const data = sitHours.map((sitHour, index) => {
@@ -90,7 +90,17 @@ app.group("/sitdata", (app) => {
   return app;
 });
 
-app.listen(3000);
+if (process.env.NODE_ENV === "production") {
+  app.listen({
+    port: 3000,
+    tls: {
+      key: Bun.file(process.env.KEY_PATH!),
+      cert: Bun.file(process.env.CERT_PATH!),
+    },
+  });
+} else {
+  app.listen({ port: 3000 });
+}
 
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
