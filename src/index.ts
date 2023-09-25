@@ -2,7 +2,13 @@ import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { cors } from "@elysiajs/cors";
 
-const app = new Elysia().use(swagger()).use(cors());
+const app = new Elysia().use(swagger()).use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    maxAge: 3600,
+  })
+);
 
 enum Side {
   left = "left",
