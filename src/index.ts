@@ -14,7 +14,17 @@ app.group("/sitdata", (app) => {
   app.get(
     "/days",
     () => {
-      return { data: [] };
+      const now = Date.now();
+      const sitHours = [2, 5, 7, 8, 4, 3, 6, 2, 3, 4, 5];
+      const data = sitHours.map((sitHour, index) => {
+        return {
+          date: new Date(now - 1000 * 60 * 60 * 24 * index),
+          sitHour,
+        };
+      });
+      return {
+        data,
+      };
     },
     {
       response: {
@@ -34,10 +44,21 @@ app.group("/sitdata", (app) => {
     "/day",
     () => {
       return {
-        consecutiveSitHour: 0,
-        sitTotal: 0,
-        badSitHour: 0,
-        badPosture: [],
+        consecutiveSitHour: 2,
+        sitTotal: 8,
+        badSitHour: 4,
+        badPosture: [
+          {
+            start: new Date(),
+            end: new Date(Date.now() + 1000 * 60 * 10),
+            side: Side.left,
+          },
+          {
+            start: new Date(Date.now() + 1000 * 60 * 60),
+            end: new Date(Date.now() + 1000 * 60 * 60 + 1000 * 60 * 10),
+            side: Side.right,
+          },
+        ],
       };
     },
     {
