@@ -1,6 +1,8 @@
 import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { cors } from "@elysiajs/cors";
+import prisma from "./prisma";
+import { daydetails } from "./service/daydetails";
 
 const app = new Elysia().use(swagger()).use(
   cors({
@@ -25,6 +27,35 @@ enum Side {
 }
 
 app.get("/", () => "Hello Elysia");
+
+app.group("/sensor", (app) => {
+  app.get(
+    "/register",
+    async () => {
+      return { nodeId: 1 };
+    },
+    {
+      body: t.Object({
+        nodeName: t.String(),
+        nodeGroup: t.String(),
+      }),
+      response: {
+        200: t.Object({
+          nodeId: t.Number(),
+        }),
+      },
+    }
+  );
+
+  app.post("/log", async () => {}, {
+    body: t.Object({
+      nodeId: t.Number(),
+      weight: t.Number(),
+    }),
+  });
+
+  return app;
+});
 
 app.group("/sitdata", (app) => {
   app.get(
@@ -59,7 +90,9 @@ app.group("/sitdata", (app) => {
 
   app.get(
     "/day",
-    () => {
+    async () => {
+      const res = await daydetails();
+
       return {
         consecutiveSitHour: 2,
         sitTotal: 8,
