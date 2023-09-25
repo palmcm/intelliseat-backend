@@ -5,6 +5,7 @@ import { cors } from "@elysiajs/cors";
 const app = new Elysia()
   .use(swagger())
   .options("/", ({ set, request }) => {
+    console.log(request.url);
     if (
       request.url == "http://localhost:5173" ||
       request.url == "https://intelliseat.pkhing.dev"
