@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Node {
+  id       Int    @id @default(autoincrement())
+  nodeName String
+
+  log     Log[]
+  TempLog TempLog[]
+}
+
+model TempLog {
+  id        Int      @default(autoincrement())
+  logged_at DateTime @default(now())
+  temp      Float
+  timeAdded Int
+
+  node   Node @relation(fields: [nodeId], references: [id])
+  nodeId Int
+
+  @@unique([id, logged_at])
+}
+
+model Log {
+  id        Int      @default(autoincrement())
+  logged_at DateTime @default(now())
+  weight    Float
+
+  node   Node @relation(fields: [nodeId], references: [id])
+  nodeId Int
+
+  @@unique([id, logged_at])
+}
