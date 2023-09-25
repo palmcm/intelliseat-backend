@@ -1,7 +1,8 @@
 import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
+import { cors } from "@elysiajs/cors";
 
-const app = new Elysia().use(swagger());
+const app = new Elysia().use(swagger()).use(cors());
 
 enum Side {
   left = "left",
