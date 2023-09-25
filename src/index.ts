@@ -5,9 +5,9 @@ import { cors } from "@elysiajs/cors";
 const app = new Elysia()
   .use(swagger())
   .onRequest(({ set, request, headers }) => {
-    console.log("Origin: ", headers["Origin"]);
-    if (headers["Origin"] === null) return;
-    set.headers["Access-Control-Allow-Origin"] = headers["Origin"];
+    const host = request.headers.get("Host");
+    console.log("Host: ", host);
+    set.headers["Access-Control-Allow-Origin"] = host ? host : "*";
     set.headers["Access-Control-Allow-Methods"] = "*";
     set.headers["Access-Control-Allow-Headers"] = "*";
     set.headers["Access-Control-Exposed-Headers"] = "*";
