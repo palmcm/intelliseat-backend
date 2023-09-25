@@ -6,7 +6,8 @@ const app = new Elysia()
   .use(swagger())
   .onRequest(({ set, request, headers }) => {
     console.log(headers["Origin"]);
-    set.headers["Access-Control-Allow-Origin"] = request.url;
+    if (headers["Origin"] === null) return;
+    set.headers["Access-Control-Allow-Origin"] = headers["Origin"];
     set.headers["Access-Control-Allow-Methods"] = "*";
     set.headers["Access-Control-Allow-Headers"] = "*";
     set.headers["Access-Control-Exposed-Headers"] = "*";
