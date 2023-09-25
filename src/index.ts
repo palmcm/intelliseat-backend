@@ -92,7 +92,7 @@ app.group("/sitdata", (app) => {
 
 if (process.env.NODE_ENV === "production") {
   app.listen({
-    port: 3000,
+    port: 443,
     tls: {
       key: Bun.file(process.env.KEY_PATH!),
       cert: Bun.file(process.env.CERT_PATH!),
