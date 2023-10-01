@@ -1,7 +1,7 @@
 import { SIT_THRESHOLD } from "../constant";
 import prisma from "../prisma";
 
-export const daysData = async () => {
+export const daysData = async (nodeGroup: string) => {
   const res = await prisma.log.groupBy({
     by: ["logged_at"],
     _sum: {
@@ -9,7 +9,7 @@ export const daysData = async () => {
     },
     where: {
       node: {
-        nodeGroup: "chair-1", //TODO: change to varriable
+        nodeGroup,
       },
     },
     having: {

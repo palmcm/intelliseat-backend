@@ -1,15 +1,15 @@
-import { Log, Node, Side } from "@prisma/client";
+import { Log, Side } from "@prisma/client";
 import prisma from "../prisma";
 import { SENSOR_THRESHOLD, SIT_THRESHOLD } from "../constant";
 
-export const daydetails = async () => {
+export const daydetails = async (nodeGroup: string) => {
   const res = await prisma.log.findMany({
     where: {
       logged_at: {
         gte: new Date(Date.now() - 1000 * 60 * 60 * 24),
       },
       node: {
-        nodeGroup: "chair-1", //TODO: change to varriable
+        nodeGroup,
       },
     },
     orderBy: {

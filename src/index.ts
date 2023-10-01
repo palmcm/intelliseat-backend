@@ -5,6 +5,7 @@ import { daydetails } from "./service/daydetails";
 import { daysData } from "./service/daysdata";
 import { Side } from "@prisma/client";
 import { logToDB } from "./service/logtodb";
+import { mockData } from "./service/mockdata";
 
 const app = new Elysia().use(swagger()).use(
   cors({
@@ -45,6 +46,26 @@ app.group("/sensor", (app) => {
     }
   );
 
+  app.post(
+    "/mock",
+    async ({ body }) => {
+      await mockData(body.nodeGroup, body.date, body.sensor);
+      return { success: true };
+    },
+    {
+      body: t.Object({
+        nodeGroup: t.String(),
+        date: t.Date(),
+        sensor: t.Array(
+          t.Object({
+            nodeSide: t.Enum(Side),
+            weight: t.Number(),
+          })
+        ),
+      }),
+    }
+  );
+
   return app;
 });
 
@@ -52,7 +73,7 @@ app.group("/sitdata", (app) => {
   app.get(
     "/days",
     async () => {
-      const data = await daysData();
+      const data = await daysData("chair-1");
       return {
         data,
       };
@@ -72,29 +93,64 @@ app.group("/sitdata", (app) => {
   );
 
   app.get(
-    "/day",
-    async () => {
-      const res = await daydetails();
-      return res;
-      // return {
-      //   consecutiveSitMin: 2,
-      //   sitTotal: 8,
-      //   badSitMin: 4,
-      //   badPosture: [
-      //     {
-      //       start: new Date(),
-      //       end: new Date(Date.now() + 1000 * 60 * 10),
-      //       side: Side.left,
-      //     },
-      //     {
-      //       start: new Date(Date.now() + 1000 * 60 * 60),
-      //       end: new Date(Date.now() + 1000 * 60 * 60 + 1000 * 60 * 10),
-      //       side: Side.right,
-      //     },
-      //   ],
-      // };
+    "/days/:nodeGroup",
+    async ({ params }) => {
+      const data = await daysData(params.nodeGroup);
+      return {
+        data,
+      };
     },
     {
+      params: t.Object({
+        nodeGroup: t.String(),
+      }),
+      response: {
+        200: t.Object({
+          data: t.Array(
+            t.Object({
+              date: t.Date(),
+              sitHour: t.Number(),
+            })
+          ),
+        }),
+      },
+    }
+  );
+
+  app.get(
+    "/day",
+    async () => {
+      const res = await daydetails("chair-1");
+      return res;
+    },
+    {
+      response: {
+        200: t.Object({
+          consecutiveSitMin: t.Number(),
+          sitTotal: t.Number(),
+          badSitMin: t.Number(),
+          badPosture: t.Array(
+            t.Object({
+              start: t.Date(),
+              end: t.Date(),
+              side: t.Enum(Side),
+            })
+          ),
+        }),
+      },
+    }
+  );
+
+  app.get(
+    "/day/:nodeGroup",
+    async ({ params }) => {
+      const res = await daydetails(params.nodeGroup);
+      return res;
+    },
+    {
+      params: t.Object({
+        nodeGroup: t.String(),
+      }),
       response: {
         200: t.Object({
           consecutiveSitMin: t.Number(),
