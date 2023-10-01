@@ -63,7 +63,7 @@ app.group("/sitdata", (app) => {
           data: t.Array(
             t.Object({
               date: t.Date(),
-              sitMin: t.Number(),
+              sitHour: t.Number(),
             })
           ),
         }),

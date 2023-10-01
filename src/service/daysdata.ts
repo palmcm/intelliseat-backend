@@ -34,7 +34,7 @@ export const daysData = async () => {
     .map((day) => {
       return {
         date: new Date(day[0]),
-        sitMin: day[1] / 60,
+        sitHour: day[1] / 3600,
       };
     })
     .sort();
