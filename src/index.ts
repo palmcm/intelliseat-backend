@@ -1,8 +1,10 @@
 import { Elysia, t } from "elysia";
 import { swagger } from "@elysiajs/swagger";
 import { cors } from "@elysiajs/cors";
-import prisma from "./prisma";
 import { daydetails } from "./service/daydetails";
+import { daysData } from "./service/daysdata";
+import { Side } from "@prisma/client";
+import { logToDB } from "./service/logtodb";
 
 const app = new Elysia().use(swagger()).use(
   cors({
@@ -21,38 +23,27 @@ const app = new Elysia().use(swagger()).use(
   })
 );
 
-enum Side {
-  left = "left",
-  right = "right",
-}
-
 app.get("/", () => "Hello Elysia");
 
 app.group("/sensor", (app) => {
-  app.get(
-    "/register",
-    async () => {
-      return { nodeId: 1 };
+  app.post(
+    "/log",
+    async ({ body }) => {
+      await logToDB(body.nodeGroup, body.sensor);
+      return { success: true };
     },
     {
       body: t.Object({
-        nodeName: t.String(),
         nodeGroup: t.String(),
+        sensor: t.Array(
+          t.Object({
+            nodeSide: t.Enum(Side),
+            weight: t.Number(),
+          })
+        ),
       }),
-      response: {
-        200: t.Object({
-          nodeId: t.Number(),
-        }),
-      },
     }
   );
-
-  app.post("/log", async () => {}, {
-    body: t.Object({
-      nodeId: t.Number(),
-      weight: t.Number(),
-    }),
-  });
 
   return app;
 });
@@ -60,16 +51,8 @@ app.group("/sensor", (app) => {
 app.group("/sitdata", (app) => {
   app.get(
     "/days",
-    () => {
-      const node = "node-1";
-      const now = Date.now();
-      const sitHours = [2, 5, 7, 8, 4, 3, 6, 2, 3, 4, 5];
-      const data = sitHours.map((sitHour, index) => {
-        return {
-          date: new Date(now - 1000 * 60 * 60 * 24 * index),
-          sitHour,
-        };
-      });
+    async () => {
+      const data = await daysData();
       return {
         data,
       };
@@ -92,24 +75,24 @@ app.group("/sitdata", (app) => {
     "/day",
     async () => {
       const res = await daydetails();
-
-      return {
-        consecutiveSitHour: 2,
-        sitTotal: 8,
-        badSitHour: 4,
-        badPosture: [
-          {
-            start: new Date(),
-            end: new Date(Date.now() + 1000 * 60 * 10),
-            side: Side.left,
-          },
-          {
-            start: new Date(Date.now() + 1000 * 60 * 60),
-            end: new Date(Date.now() + 1000 * 60 * 60 + 1000 * 60 * 10),
-            side: Side.right,
-          },
-        ],
-      };
+      return res;
+      // return {
+      //   consecutiveSitHour: 2,
+      //   sitTotal: 8,
+      //   badSitHour: 4,
+      //   badPosture: [
+      //     {
+      //       start: new Date(),
+      //       end: new Date(Date.now() + 1000 * 60 * 10),
+      //       side: Side.left,
+      //     },
+      //     {
+      //       start: new Date(Date.now() + 1000 * 60 * 60),
+      //       end: new Date(Date.now() + 1000 * 60 * 60 + 1000 * 60 * 10),
+      //       side: Side.right,
+      //     },
+      //   ],
+      // };
     },
     {
       response: {

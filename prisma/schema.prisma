@@ -10,13 +10,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Side {
+  LEFT
+  RIGHT
+}
+
 model Node {
   id        Int    @id @default(autoincrement())
-  nodeName  String
   nodeGroup String
+  nodeSide  Side
 
-  log     Log[]
-  TempLog TempLog[]
+  log Log[]
+
+  @@unique([nodeGroup, nodeSide])
 }
 
 model TempLog {
@@ -24,11 +30,10 @@ model TempLog {
   logged_at DateTime @default(now())
   temp      Float
   timeAdded Int
+  nodeGroup String
 
-  node   Node @relation(fields: [nodeId], references: [id])
-  nodeId Int
-
-  @@unique([id, logged_at])
+  @@id([id])
+  @@unique([nodeGroup])
 }
 
 model Log {
