@@ -23,7 +23,7 @@ export const daysData = async (nodeGroup: string) => {
   const days: { [key: string]: number } = {};
   res.forEach((timeLog) => {
     const date = timeLog.logged_at.toDateString();
-    if (!days[date]) {
+    if (days[date] == null) {
       days[date] = 0;
     } else {
       days[date]++;
@@ -34,7 +34,7 @@ export const daysData = async (nodeGroup: string) => {
     .map((day) => {
       return {
         date: new Date(day[0]),
-        sitHour: day[1] / 3600,
+        sitHour: parseFloat((day[1] / 3600).toFixed(2)),
       };
     })
     .sort();

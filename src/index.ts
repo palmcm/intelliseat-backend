@@ -49,13 +49,15 @@ app.group("/sensor", (app) => {
   app.post(
     "/mock",
     async ({ body }) => {
-      await mockData(body.nodeGroup, body.date, body.sensor);
+      const date = new Date(body.date);
+      if (date.toString() === "Invalid Date") return { success: false };
+      await mockData(body.nodeGroup, date, body.sensor);
       return { success: true };
     },
     {
       body: t.Object({
         nodeGroup: t.String(),
-        date: t.Date(),
+        date: t.String(),
         sensor: t.Array(
           t.Object({
             nodeSide: t.Enum(Side),

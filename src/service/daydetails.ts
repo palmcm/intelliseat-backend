@@ -88,9 +88,9 @@ export const daydetails = async (nodeGroup: string) => {
     }
   }
   return {
-    consecutiveSitMin: consecutiveSitTime / 60,
-    sitTotal: sitTotalTime / 60,
-    badSitMin: badPostureTime / 60,
+    consecutiveSitMin: parseFloat((consecutiveSitTime / 60).toFixed(2)),
+    sitTotal: parseFloat((sitTotalTime / 60).toFixed(2)),
+    badSitMin: parseFloat((badPostureTime / 60).toFixed(2)),
     badPosture: badPosture,
   };
 };
