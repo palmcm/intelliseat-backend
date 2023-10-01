@@ -1,6 +1,10 @@
 import { Log, Side } from "@prisma/client";
 import prisma from "../prisma";
-import { SENSOR_THRESHOLD, SIT_THRESHOLD } from "../constant";
+import {
+  BAD_POSITION_TIME,
+  SENSOR_THRESHOLD,
+  SIT_THRESHOLD,
+} from "../constant";
 
 export const daydetails = async (nodeGroup: string) => {
   const res = await prisma.log.findMany({
@@ -43,6 +47,7 @@ export const daydetails = async (nodeGroup: string) => {
     let weight: number = 0;
     let leftweight: number = 0;
     let rightweight: number = 0;
+    const now_logged_at = logbyside[sideList[0]][i].logged_at;
     for (let j = 0; j < sideList.length; j++) {
       const log = logbyside[sideList[j]][i];
       weight += log.weight;
@@ -67,22 +72,32 @@ export const daydetails = async (nodeGroup: string) => {
         }
       } else {
         if (isBadPosture) {
-          badPosture.push({
-            start: startBadPostureTime,
-            end: logbyside[sideList[0]][i].logged_at,
-            side: badPostureSide,
-          });
+          if (
+            now_logged_at.getTime() - startBadPostureTime.getTime() >
+            1000 * BAD_POSITION_TIME
+          ) {
+            badPosture.push({
+              start: startBadPostureTime,
+              end: logbyside[sideList[0]][i].logged_at,
+              side: badPostureSide,
+            });
+          }
           isBadPosture = false;
         }
       }
     } else {
       consecutiveSitTime = 0;
       if (isBadPosture) {
-        badPosture.push({
-          start: startBadPostureTime,
-          end: logbyside[sideList[0]][i].logged_at,
-          side: badPostureSide,
-        });
+        if (
+          now_logged_at.getTime() - startBadPostureTime.getTime() >
+          1000 * BAD_POSITION_TIME
+        ) {
+          badPosture.push({
+            start: startBadPostureTime,
+            end: logbyside[sideList[0]][i].logged_at,
+            side: badPostureSide,
+          });
+        }
         isBadPosture = false;
       }
     }
