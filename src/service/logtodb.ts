@@ -72,7 +72,6 @@ export const logToDB = async (
           temp: 0,
           logged_at: Datenoms,
           last_logged_at: Datenoms,
-          timeAdded: 0,
         },
       });
       return;
