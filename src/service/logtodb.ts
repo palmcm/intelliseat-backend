@@ -1,6 +1,11 @@
 import { Side } from "@prisma/client";
 import prisma from "../prisma";
-import { SIT_THRESHOLD, SIT_TIME_NOTIFICATION } from "../constant";
+import {
+  SIT_THRESHOLD,
+  SIT_TIME_NOTIFICATION,
+  STAND_UP_TIME,
+} from "../constant";
+import { sendToDiscord } from "./sendToDiscord";
 
 const addLogToDB = async (
   nodeGroup: string,
@@ -48,22 +53,44 @@ export const logToDB = async (
   if (!startSit) {
     await prisma.tempLog.create({
       data: {
-        temp: weight,
+        temp: 0,
         logged_at: Datenoms,
         timeAdded: 0,
         nodeGroup,
       },
     });
   } else {
-    if (startSit.timeAdded > 1000 * 60 * 60 * SIT_TIME_NOTIFICATION) {
-      //send webhook to discord
+    if (
+      Datenoms.getTime() - startSit.last_logged_at.getTime() >
+      1000 * 60 * STAND_UP_TIME
+    ) {
+      await prisma.tempLog.update({
+        where: {
+          id: startSit.id,
+        },
+        data: {
+          temp: 0,
+          logged_at: Datenoms,
+          last_logged_at: Datenoms,
+          timeAdded: 0,
+        },
+      });
       return;
     }
 
-    if (Datenoms.getTime() - startSit.logged_at.getTime() > 1000 * 10) {
-      await prisma.tempLog.delete({
+    if (
+      startSit.temp === 0 &&
+      Datenoms.getTime() - startSit.logged_at.getTime() >
+        1000 * 60 * SIT_TIME_NOTIFICATION
+    ) {
+      sendToDiscord(60 * SIT_TIME_NOTIFICATION);
+      await prisma.tempLog.update({
         where: {
           id: startSit.id,
+        },
+        data: {
+          temp: 1,
+          last_logged_at: Datenoms,
         },
       });
       return;
@@ -75,8 +102,7 @@ export const logToDB = async (
       },
       data: {
         temp: weight,
-        logged_at: Datenoms,
-        timeAdded: startSit.timeAdded + 1,
+        last_logged_at: Datenoms,
       },
     });
   }

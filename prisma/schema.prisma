@@ -26,11 +26,12 @@ model Node {
 }
 
 model TempLog {
-  id        Int      @default(autoincrement())
-  logged_at DateTime @default(now())
-  temp      Float
-  timeAdded Int
-  nodeGroup String
+  id             Int      @default(autoincrement())
+  logged_at      DateTime @default(now())
+  last_logged_at DateTime @default(now())
+  temp           Float
+  timeAdded      Int
+  nodeGroup      String
 
   @@id([id])
   @@unique([nodeGroup])
