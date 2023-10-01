@@ -19,7 +19,7 @@ export const daydetails = async () => {
       node: true,
     },
   });
-  //find consecutive sit hour, sit total, and bad posture (|1-2| > 10) from weight data
+  //find consecutive sit Min, sit total, and bad posture (|1-2| > 10) from weight data
   let badPosture = [];
   const logbyside: { [side: string]: Log[] } = {};
   for (let i = 0; i < res.length; i++) {
@@ -88,9 +88,9 @@ export const daydetails = async () => {
     }
   }
   return {
-    consecutiveSitHour: consecutiveSitTime / 60,
+    consecutiveSitMin: consecutiveSitTime / 60,
     sitTotal: sitTotalTime / 60,
-    badSitHour: badPostureTime / 60,
+    badSitMin: badPostureTime / 60,
     badPosture: badPosture,
   };
 };

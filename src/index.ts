@@ -63,7 +63,7 @@ app.group("/sitdata", (app) => {
           data: t.Array(
             t.Object({
               date: t.Date(),
-              sitHour: t.Number(),
+              sitMin: t.Number(),
             })
           ),
         }),
@@ -77,9 +77,9 @@ app.group("/sitdata", (app) => {
       const res = await daydetails();
       return res;
       // return {
-      //   consecutiveSitHour: 2,
+      //   consecutiveSitMin: 2,
       //   sitTotal: 8,
-      //   badSitHour: 4,
+      //   badSitMin: 4,
       //   badPosture: [
       //     {
       //       start: new Date(),
@@ -97,9 +97,9 @@ app.group("/sitdata", (app) => {
     {
       response: {
         200: t.Object({
-          consecutiveSitHour: t.Number(),
+          consecutiveSitMin: t.Number(),
           sitTotal: t.Number(),
-          badSitHour: t.Number(),
+          badSitMin: t.Number(),
           badPosture: t.Array(
             t.Object({
               start: t.Date(),
