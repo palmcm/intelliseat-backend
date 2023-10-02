@@ -21,13 +21,25 @@ export const daysData = async (nodeGroup: string) => {
     },
   });
   const days: { [key: string]: number } = {};
+  const last_logged_at: { [key: string]: Date } = {};
   res.forEach((timeLog) => {
     const date = timeLog.logged_at.toDateString();
+
     if (days[date] == null) {
       days[date] = 0;
     } else {
-      days[date]++;
+      if (
+        last_logged_at[date] != null &&
+        timeLog.logged_at.getUTCDay() > 1 &&
+        timeLog.logged_at.getUTCMonth() > 9
+      ) {
+        days[date] +=
+          timeLog.logged_at.getTime() - last_logged_at[date].getTime();
+      } else {
+        days[date] += 0;
+      }
     }
+    last_logged_at[date] = timeLog.logged_at;
   });
   const daysWithSitTime = Object.entries(days);
   return daysWithSitTime
