@@ -24,7 +24,7 @@ export const daysData = async (nodeGroup: string) => {
   const last_logged_at: { [key: string]: Date } = {};
   res.forEach((timeLog) => {
     const date = timeLog.logged_at.toDateString();
-
+    console.log(date);
     if (days[date] == null) {
       days[date] = 0;
     } else {
