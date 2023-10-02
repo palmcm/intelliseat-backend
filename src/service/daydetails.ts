@@ -113,6 +113,20 @@ export const daydetails = async (nodeGroup: string) => {
       }
     }
   }
+  if (isBadPosture && timelength !== 0) {
+    const finalTime = logbyside[sideList[0]][timelength - 1].logged_at;
+    if (
+      finalTime.getTime() - startBadPostureTime.getTime() >
+      1000 * BAD_POSITION_TIME
+    ) {
+      badPosture.push({
+        start: startBadPostureTime.toISOString(),
+        end: finalTime.toISOString(),
+        side: badPostureSide,
+      });
+      badPostureTime += finalTime.getTime() - startBadPostureTime.getTime();
+    }
+  }
   return {
     consecutiveSitMin: parseFloat((consecutiveSitTime / 1000 / 60).toFixed(2)),
     sitTotal: parseFloat((sitTotalTime / 1000 / 60).toFixed(2)),
