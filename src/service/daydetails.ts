@@ -7,10 +7,15 @@ import {
 } from "../constant";
 
 export const daydetails = async (nodeGroup: string) => {
+  const now = new Date();
+  if (now.getUTCHours() < 17) {
+    now.setUTCDate(now.getUTCDate() - 1);
+  }
+  now.setUTCHours(17, 0, 0, 0);
   const res = await prisma.log.findMany({
     where: {
       logged_at: {
-        gte: new Date(Date.now() - 1000 * 60 * 60 * 24),
+        gte: now,
       },
       node: {
         nodeGroup,
@@ -40,7 +45,7 @@ export const daydetails = async (nodeGroup: string) => {
   let consecutiveSitTime = 0;
   let isBadPosture = false;
   let badPostureTime = 0;
-  let startBadPostureTime: Date = new Date(Date.now() - 1000 * 60 * 60 * 24);
+  let startBadPostureTime: Date = now;
   let badPostureSide: Side = Side.LEFT;
   for (let i = 0; i < timelength; i++) {
     let bad: boolean = false;

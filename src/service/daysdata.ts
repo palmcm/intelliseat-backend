@@ -22,7 +22,7 @@ export const daysData = async (nodeGroup: string) => {
   });
   const days: { [key: string]: number } = {};
   res.forEach((timeLog) => {
-    const date = timeLog.logged_at.toDateString();
+    const date = timeLog.logged_at.toLocaleDateString("th-TH");
     if (days[date] == null) {
       days[date] = 0;
     } else {
