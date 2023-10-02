@@ -33,7 +33,7 @@ export const daysData = async (nodeGroup: string) => {
       (timeLog.logged_at.getDay() < 1 || timeLog.logged_at.getMonth() < 9)
     ) {
       days[date] +=
-        timeLog.logged_at.getTime() - last_logged_at[date].getTime();
+        (timeLog.logged_at.getTime() - last_logged_at[date].getTime()) / 1000;
     } else {
       days[date]++;
     }
