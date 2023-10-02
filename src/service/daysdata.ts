@@ -48,5 +48,6 @@ export const daysData = async (nodeGroup: string) => {
         sitHour: parseFloat((day[1] / 3600).toFixed(2)),
       };
     })
-    .sort();
+    .sort()
+    .reverse();
 };
