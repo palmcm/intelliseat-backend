@@ -84,7 +84,7 @@ export const logToDB = async (
       Datenoms.getTime() - startSit.logged_at.getTime() >
         1000 * 60 * SIT_TIME_NOTIFICATION
     ) {
-      sendToDiscord(60 * SIT_TIME_NOTIFICATION);
+      await sendToDiscord(60 * SIT_TIME_NOTIFICATION);
       await prisma.tempLog.update({
         where: {
           id: startSit.id,
@@ -110,7 +110,6 @@ export const logToDB = async (
           startSit.timeAdded +
           Datenoms.getTime() -
           startSit.logged_at.getTime(),
-        temp: weight,
         last_logged_at: Datenoms,
       },
     });
