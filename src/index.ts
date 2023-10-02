@@ -32,9 +32,7 @@ app.get("/", () => "Hello Elysia");
 
 app.ws("/ws", {
   open(ws) {
-    ws.send("Connected");
     ws.subscribe("daydata");
-    ws.subscribe("test");
   },
 });
 
@@ -82,17 +80,6 @@ app.group("/sensor", (appGroup) => {
           })
         ),
       }),
-    }
-  );
-
-  appGroup.post(
-    "/test",
-    async ({ body }) => {
-      if (!body) body = "Test Socket";
-      app.server!.publish("test", JSON.stringify(body));
-    },
-    {
-      body: t.Any(),
     }
   );
 
