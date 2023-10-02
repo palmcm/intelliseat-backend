@@ -67,8 +67,9 @@ export const daydetails = async (nodeGroup: string) => {
       bad = true;
     }
     if (weight > SIT_THRESHOLD) {
-      sitTotalTime = now_logged_at.getTime() - before_logged_at.getTime();
-      consecutiveSitTime = now_logged_at.getTime() - before_logged_at.getTime();
+      sitTotalTime += now_logged_at.getTime() - before_logged_at.getTime();
+      consecutiveSitTime +=
+        now_logged_at.getTime() - before_logged_at.getTime();
       if (bad) {
         badPostureTime++;
         if (!isBadPosture) {
