@@ -96,6 +96,10 @@ app.group("/sensor", (appGroup) => {
     }
   );
 
+  appGroup.post("/testWebSocket", async () => {
+    app.server!.publish("daydata", JSON.stringify(await daydetails("chair-1")));
+  });
+
   return appGroup;
 });
 
