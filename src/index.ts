@@ -6,31 +6,48 @@ import { daysData } from "./service/daysdata";
 import { Side } from "@prisma/client";
 import { logToDB } from "./service/logtodb";
 import { mockData } from "./service/mockdata";
+import { ws } from "elysia";
 
-const app = new Elysia().use(swagger()).use(
-  cors({
-    origin: (request: Request): boolean => {
-      const origin = request.headers.get("origin");
-      if (!origin) {
-        return false;
-      }
-      const allowedOrigins = [
-        "http://127.0.0.1:5173",
-        "https://intelliseat.pkhing.dev",
-      ];
-      return allowedOrigins.includes(origin);
-    },
-    credentials: true,
-  })
-);
+const app = new Elysia()
+  .use(swagger())
+  .use(
+    cors({
+      origin: (request: Request): boolean => {
+        const origin = request.headers.get("origin");
+        if (!origin) {
+          return false;
+        }
+        const allowedOrigins = [
+          "http://127.0.0.1:5173",
+          "https://intelliseat.pkhing.dev",
+        ];
+        return allowedOrigins.includes(origin);
+      },
+      credentials: true,
+    })
+  )
+  .use(ws());
 
 app.get("/", () => "Hello Elysia");
 
-app.group("/sensor", (app) => {
-  app.post(
+app.ws("/ws", {
+  open(ws) {
+    ws.send("Connected");
+    ws.subscribe("daydata");
+    ws.subscribe("test");
+  },
+});
+
+app.group("/sensor", (appGroup) => {
+  appGroup.post(
     "/log",
     async ({ body }) => {
-      await logToDB(body.nodeGroup, body.sensor);
+      const update: boolean = await logToDB(body.nodeGroup, body.sensor);
+      if (update)
+        app.server!.publish(
+          "daydata",
+          JSON.stringify(await daydetails(body.nodeGroup))
+        );
       return { success: true };
     },
     {
@@ -46,7 +63,7 @@ app.group("/sensor", (app) => {
     }
   );
 
-  app.post(
+  appGroup.post(
     "/mock",
     async ({ body }) => {
       const date = new Date(body.date);
@@ -68,7 +85,18 @@ app.group("/sensor", (app) => {
     }
   );
 
-  return app;
+  appGroup.post(
+    "/test",
+    async ({ body }) => {
+      if (!body) body = "Test Socket";
+      app.server!.publish("test", JSON.stringify(body));
+    },
+    {
+      body: t.Any(),
+    }
+  );
+
+  return appGroup;
 });
 
 app.group("/sitdata", (app) => {

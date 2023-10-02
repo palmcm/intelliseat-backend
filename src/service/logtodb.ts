@@ -44,12 +44,13 @@ export const logToDB = async (
     await addLogToDB(nodeGroup, data[i], Datenoms);
   }
   let weight = data.map((sensor) => sensor.weight).reduce((a, b) => a + b, 0);
-  if (weight < SIT_THRESHOLD) return;
   const startSit = await prisma.tempLog.findFirst({
     where: {
       nodeGroup,
     },
   });
+  if (weight < SIT_THRESHOLD) return !!startSit;
+  const update = Datenoms.getSeconds() == 0;
   if (!startSit) {
     await prisma.tempLog.create({
       data: {
@@ -74,7 +75,7 @@ export const logToDB = async (
           last_logged_at: Datenoms,
         },
       });
-      return;
+      return update;
     }
 
     if (
@@ -92,7 +93,7 @@ export const logToDB = async (
           last_logged_at: Datenoms,
         },
       });
-      return;
+      return true;
     }
 
     await prisma.tempLog.update({
@@ -105,4 +106,5 @@ export const logToDB = async (
       },
     });
   }
+  return update;
 };
