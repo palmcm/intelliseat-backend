@@ -85,7 +85,7 @@ app.group("/sitdata", (app) => {
         200: t.Object({
           data: t.Array(
             t.Object({
-              date: t.Date(),
+              date: t.String(),
               sitHour: t.Number(),
             })
           ),
@@ -110,7 +110,7 @@ app.group("/sitdata", (app) => {
         200: t.Object({
           data: t.Array(
             t.Object({
-              date: t.Date(),
+              date: t.String(),
               sitHour: t.Number(),
             })
           ),
@@ -133,8 +133,8 @@ app.group("/sitdata", (app) => {
           badSitMin: t.Number(),
           badPosture: t.Array(
             t.Object({
-              start: t.Date(),
-              end: t.Date(),
+              start: t.String(),
+              end: t.String(),
               side: t.Enum(Side),
             })
           ),
@@ -160,8 +160,8 @@ app.group("/sitdata", (app) => {
           badSitMin: t.Number(),
           badPosture: t.Array(
             t.Object({
-              start: t.Date(),
-              end: t.Date(),
+              start: t.String(),
+              end: t.String(),
               side: t.Enum(Side),
             })
           ),
