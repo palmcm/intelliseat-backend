@@ -70,6 +70,7 @@ export const logToDB = async (
           id: startSit.id,
         },
         data: {
+          timeAdded: 0,
           temp: 0,
           logged_at: Datenoms,
           last_logged_at: Datenoms,
@@ -89,6 +90,10 @@ export const logToDB = async (
           id: startSit.id,
         },
         data: {
+          timeAdded:
+            startSit.timeAdded +
+            Datenoms.getTime() -
+            startSit.logged_at.getTime(),
           temp: 1,
           last_logged_at: Datenoms,
         },
@@ -101,6 +106,10 @@ export const logToDB = async (
         id: startSit.id,
       },
       data: {
+        timeAdded:
+          startSit.timeAdded +
+          Datenoms.getTime() -
+          startSit.logged_at.getTime(),
         temp: weight,
         last_logged_at: Datenoms,
       },
