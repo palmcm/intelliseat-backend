@@ -24,7 +24,6 @@ export const daysData = async (nodeGroup: string) => {
   const last_logged_at: { [key: string]: Date } = {};
   res.forEach((timeLog) => {
     const date = timeLog.logged_at.toDateString();
-    console.log(date);
     if (days[date] == null) {
       days[date] = 0;
     } else {
@@ -33,6 +32,7 @@ export const daysData = async (nodeGroup: string) => {
         timeLog.logged_at.getDay() < 2 &&
         timeLog.logged_at.getMonth() < 10
       ) {
+        console.log(date, last_logged_at[date]);
         days[date] +=
           timeLog.logged_at.getTime() - last_logged_at[date].getTime();
       } else {
