@@ -29,10 +29,14 @@ export const daysData = async (nodeGroup: string) => {
     } else {
       if (
         last_logged_at[date] != null &&
-        timeLog.logged_at.getDay() < 2 &&
-        timeLog.logged_at.getMonth() < 10
+        (timeLog.logged_at.getDay() < 2 || timeLog.logged_at.getMonth() < 10)
       ) {
-        console.log(date, last_logged_at[date]);
+        console.log(
+          date,
+          last_logged_at[date],
+          timeLog.logged_at.getDay(),
+          timeLog.logged_at.getMonth()
+        );
         days[date] +=
           timeLog.logged_at.getTime() - last_logged_at[date].getTime();
       } else {
