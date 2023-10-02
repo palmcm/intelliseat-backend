@@ -33,7 +33,7 @@ export const daysData = async (nodeGroup: string) => {
   return daysWithSitTime
     .map((day) => {
       return {
-        date: day[0],
+        date: new Date(day[0]).toISOString(),
         sitHour: parseFloat((day[1] / 3600).toFixed(2)),
       };
     })

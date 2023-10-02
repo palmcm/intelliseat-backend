@@ -82,8 +82,8 @@ export const daydetails = async (nodeGroup: string) => {
             1000 * BAD_POSITION_TIME
           ) {
             badPosture.push({
-              start: startBadPostureTime.toLocaleString("th-TH"),
-              end: logbyside[sideList[0]][i].logged_at.toLocaleString("th-TH"),
+              start: startBadPostureTime.toISOString(),
+              end: logbyside[sideList[0]][i].logged_at.toISOString(),
               side: badPostureSide,
             });
           }
@@ -98,8 +98,8 @@ export const daydetails = async (nodeGroup: string) => {
           1000 * BAD_POSITION_TIME
         ) {
           badPosture.push({
-            start: startBadPostureTime.toLocaleString("th-TH"),
-            end: logbyside[sideList[0]][i].logged_at.toLocaleString("th-TH"),
+            start: startBadPostureTime.toISOString(),
+            end: logbyside[sideList[0]][i].logged_at.toISOString(),
             side: badPostureSide,
           });
         }
