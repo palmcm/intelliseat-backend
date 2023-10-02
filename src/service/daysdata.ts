@@ -26,23 +26,23 @@ export const daysData = async (nodeGroup: string) => {
     const date = timeLog.logged_at.toDateString();
     if (days[date] == null) {
       days[date] = 0;
-    } else {
-      if (
-        last_logged_at[date] != null &&
-        (timeLog.logged_at.getDay() < 1 || timeLog.logged_at.getMonth() < 9)
-      ) {
-        console.log(
-          date,
-          last_logged_at[date],
-          timeLog.logged_at.getDay(),
-          timeLog.logged_at.getMonth()
-        );
-        days[date] +=
-          timeLog.logged_at.getTime() - last_logged_at[date].getTime();
-      } else {
-        days[date]++;
-      }
     }
+    if (
+      last_logged_at[date] != null &&
+      (timeLog.logged_at.getDay() < 1 || timeLog.logged_at.getMonth() < 9)
+    ) {
+      console.log(
+        date,
+        last_logged_at[date],
+        timeLog.logged_at.getDay(),
+        timeLog.logged_at.getMonth()
+      );
+      days[date] +=
+        timeLog.logged_at.getTime() - last_logged_at[date].getTime();
+    } else {
+      days[date]++;
+    }
+
     last_logged_at[date] = timeLog.logged_at;
   });
   const daysWithSitTime = Object.entries(days);
