@@ -47,11 +47,12 @@ export const daydetails = async (nodeGroup: string) => {
   let badPostureTime = 0;
   let startBadPostureTime: Date = now;
   let badPostureSide: Side = Side.LEFT;
-  for (let i = 0; i < timelength; i++) {
+  for (let i = 1; i < timelength; i++) {
     let bad: boolean = false;
     let weight: number = 0;
     let leftweight: number = 0;
     let rightweight: number = 0;
+    const before_logged_at = logbyside[sideList[0]][i - 1].logged_at;
     const now_logged_at = logbyside[sideList[0]][i].logged_at;
     for (let j = 0; j < sideList.length; j++) {
       const log = logbyside[sideList[j]][i];
@@ -66,8 +67,8 @@ export const daydetails = async (nodeGroup: string) => {
       bad = true;
     }
     if (weight > SIT_THRESHOLD) {
-      sitTotalTime++;
-      consecutiveSitTime++;
+      sitTotalTime = now_logged_at.getTime() - before_logged_at.getTime();
+      consecutiveSitTime = now_logged_at.getTime() - before_logged_at.getTime();
       if (bad) {
         badPostureTime++;
         if (!isBadPosture) {
@@ -83,9 +84,11 @@ export const daydetails = async (nodeGroup: string) => {
           ) {
             badPosture.push({
               start: startBadPostureTime.toISOString(),
-              end: logbyside[sideList[0]][i].logged_at.toISOString(),
+              end: now_logged_at.toISOString(),
               side: badPostureSide,
             });
+            badPostureTime +=
+              now_logged_at.getTime() - startBadPostureTime.getTime();
           }
           isBadPosture = false;
         }
@@ -99,18 +102,20 @@ export const daydetails = async (nodeGroup: string) => {
         ) {
           badPosture.push({
             start: startBadPostureTime.toISOString(),
-            end: logbyside[sideList[0]][i].logged_at.toISOString(),
+            end: now_logged_at.toISOString(),
             side: badPostureSide,
           });
+          badPostureTime +=
+            now_logged_at.getTime() - startBadPostureTime.getTime();
         }
         isBadPosture = false;
       }
     }
   }
   return {
-    consecutiveSitMin: parseFloat((consecutiveSitTime / 60).toFixed(2)),
-    sitTotal: parseFloat((sitTotalTime / 60).toFixed(2)),
-    badSitMin: parseFloat((badPostureTime / 60).toFixed(2)),
+    consecutiveSitMin: parseFloat((consecutiveSitTime / 1000 / 60).toFixed(2)),
+    sitTotal: parseFloat((sitTotalTime / 1000 / 60).toFixed(2)),
+    badSitMin: parseFloat((badPostureTime / 1000 / 60).toFixed(2)),
     badPosture: badPosture,
   };
 };
