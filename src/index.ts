@@ -84,7 +84,8 @@ app.group("/sensor", (appGroup) => {
   );
 
   appGroup.post("/testWebSocket", async () => {
-    app.server!.publish("daydata", JSON.stringify(await daydetails("chair-1")));
+    const res = await daydetails("chair-1");
+    app.server!.publish("daydata", JSON.stringify({ ...res, sitTotal: 99 }));
   });
 
   return appGroup;
